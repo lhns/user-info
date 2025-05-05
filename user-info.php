@@ -131,16 +131,23 @@
                         $hasAccess = count(array_intersect($requiredGroups, $groups)) > 0 || count($requiredGroups) === 0;
                         $badgeClass = $hasAccess ? 'badge-yes' : 'badge-no';
                         $badgeText = $hasAccess ? 'yes' : 'no';
-                        $tooltipText = count($requiredGroups)
-                            ? 'Required Groups: ' . implode(', ', $requiredGroups)
-                            : 'Accessible to all users';
 
                         echo '<div class="badge-wrapper">';
                         echo "<span class=\"badge $badgeClass\">";
                         echo "<span class=\"badge-label\">" . htmlspecialchars($service) . "</span>";
                         echo "<span class=\"badge-value\">" . htmlspecialchars($badgeText) . "</span>";
                         echo "</span>";
-                        echo "<div class=\"tooltip\">" . htmlspecialchars($tooltipText) . "</div>";
+                        echo "<div class=\"tooltip\">";
+                        if (count($requiredGroups)) {
+                            echo "Required Groups:<ul style='margin: 0.5em 0 0; padding-left: 1.2em;'>";
+                            foreach ($requiredGroups as $group) {
+                                echo "<li>" . htmlspecialchars($group) . "</li>";
+                            }
+                            echo "</ul>";
+                        } else {
+                            echo "Accessible to all users";
+                        }
+                        echo "</div>";
                         echo '</div>';
                     }
                     ?>
