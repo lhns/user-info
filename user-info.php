@@ -35,14 +35,20 @@
             margin: 0;
             padding-left: 20px;
         }
+
+        .badge-wrapper {
+            position: relative;
+            display: inline-block;
+            margin: 0.2em 0.4em 0.2em 0;
+        }
         .badge {
             display: inline-flex;
             border-radius: 0.5em;
             font-size: 0.9em;
             font-weight: bold;
-            margin: 0.2em 0.4em 0.2em 0;
             overflow: hidden;
             box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            cursor: default;
         }
         .badge-label {
             background-color: #2c3e50;
@@ -58,6 +64,26 @@
         }
         .badge-no .badge-value {
             background-color: #d73a49;
+        }
+        .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            background-color: #333;
+            color: #fff;
+            padding: 5px 8px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            z-index: 1000;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+            top: 2.2em;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .badge-wrapper:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
         }
     </style>
 </head>
@@ -94,23 +120,31 @@
         <tr>
             <th>Access</th>
             <td>
-                <?php
-                $accessMatrix = [
-                    "GitLab" => ["Admin", "GitLab"],
-                    "Grafana" => ["Admin", "Grafana"]
-                ];
+                <div style="display: flex; flex-wrap: wrap;">
+                    <?php
+                    $accessMatrix = [
+                        "GitLab" => ["Admin", "GitLab"],
+                        "Grafana" => ["Admin", "Grafana"]
+                    ];
 
-                foreach ($accessMatrix as $service => $requiredGroups) {
-                    $hasAccess = count(array_intersect($requiredGroups, $groups)) > 0 || count($requiredGroups) == 0;
-                    $badgeClass = $hasAccess ? 'badge-yes' : 'badge-no';
-                    $badgeText = $hasAccess ? 'yes' : 'no';
+                    foreach ($accessMatrix as $service => $requiredGroups) {
+                        $hasAccess = count(array_intersect($requiredGroups, $groups)) > 0 || count($requiredGroups) === 0;
+                        $badgeClass = $hasAccess ? 'badge-yes' : 'badge-no';
+                        $badgeText = $hasAccess ? 'yes' : 'no';
+                        $tooltipText = count($requiredGroups)
+                            ? 'Required Groups: ' . implode(', ', $requiredGroups)
+                            : 'Accessible to all users';
 
-                    echo "<span class=\"badge $badgeClass\">";
-                    echo "<span class=\"badge-label\">" . htmlspecialchars($service) . "</span>";
-                    echo "<span class=\"badge-value\">" . htmlspecialchars($badgeText) . "</span>";
-                    echo "</span>";
-                }
-                ?>
+                        echo '<div class="badge-wrapper">';
+                        echo "<span class=\"badge $badgeClass\">";
+                        echo "<span class=\"badge-label\">" . htmlspecialchars($service) . "</span>";
+                        echo "<span class=\"badge-value\">" . htmlspecialchars($badgeText) . "</span>";
+                        echo "</span>";
+                        echo "<div class=\"tooltip\">" . htmlspecialchars($tooltipText) . "</div>";
+                        echo '</div>';
+                    }
+                    ?>
+                </div>
             </td>
         </tr>
     </table>
