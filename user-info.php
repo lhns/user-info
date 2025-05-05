@@ -35,6 +35,30 @@
             margin: 0;
             padding-left: 20px;
         }
+        .badge {
+            display: inline-flex;
+            border-radius: 0.5em;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin: 0.2em 0.4em 0.2em 0;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .badge-label {
+            background-color: #2c3e50;
+            color: white;
+            padding: 0.3em 0.6em;
+        }
+        .badge-value {
+            padding: 0.3em 0.6em;
+            color: white;
+        }
+        .badge-yes .badge-value {
+            background-color: #28a745;
+        }
+        .badge-no .badge-value {
+            background-color: #d73a49;
+        }
     </style>
 </head>
 <body>
@@ -59,15 +83,34 @@
             <td>
                 <ul>
                     <?php
-                    $groups = explode(',', $_SERVER['HTTP_REMOTE_GROUPS'] ?? '');
+                    $groups = array_filter(array_map('trim', explode(',', $_SERVER['HTTP_REMOTE_GROUPS'] ?? '')));
                     foreach ($groups as $group) {
-                        $cleanGroup = trim($group);
-                        if ($cleanGroup) {
-                            echo '<li>' . htmlspecialchars($cleanGroup) . '</li>';
-                        }
+                        echo '<li>' . htmlspecialchars($group) . '</li>';
                     }
                     ?>
                 </ul>
+            </td>
+        </tr>
+        <tr>
+            <th>Access</th>
+            <td>
+                <?php
+                $accessMatrix = [
+                    "GitLab" => ["Admin", "GitLab"],
+                    "Grafana" => ["Admin", "Grafana"]
+                ];
+
+                foreach ($accessMatrix as $service => $requiredGroups) {
+                    $hasAccess = count(array_intersect($requiredGroups, $groups)) > 0 || count($requiredGroups) == 0;
+                    $badgeClass = $hasAccess ? 'badge-yes' : 'badge-no';
+                    $badgeText = $hasAccess ? 'yes' : 'no';
+
+                    echo "<span class=\"badge $badgeClass\">";
+                    echo "<span class=\"badge-label\">" . htmlspecialchars($service) . "</span>";
+                    echo "<span class=\"badge-value\">" . htmlspecialchars($badgeText) . "</span>";
+                    echo "</span>";
+                }
+                ?>
             </td>
         </tr>
     </table>
