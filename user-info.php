@@ -94,15 +94,15 @@
     <table>
         <tr>
             <th>Username</th>
-            <td><?= htmlspecialchars($_SERVER['HTTP_REMOTE_USER'] ?? 'N/A') ?></td>
+            <td><?= htmlspecialchars(trim($_SERVER['HTTP_REMOTE_USER'] ?? '') !== '' ? $_SERVER['HTTP_REMOTE_USER'] : '⚠️ N/A') ?></td>
         </tr>
         <tr>
             <th>Email</th>
-            <td><?= htmlspecialchars($_SERVER['HTTP_REMOTE_EMAIL'] ?? 'N/A') ?></td>
+            <td><?= htmlspecialchars(trim($_SERVER['HTTP_REMOTE_EMAIL'] ?? '') !== '' ? $_SERVER['HTTP_REMOTE_EMAIL'] : '⚠️ N/A') ?></td>
         </tr>
         <tr>
             <th>Name</th>
-            <td><?= htmlspecialchars($_SERVER['HTTP_REMOTE_NAME'] ?? 'N/A') ?></td>
+            <td><?= htmlspecialchars(trim($_SERVER['HTTP_REMOTE_NAME'] ?? '') !== '' ? $_SERVER['HTTP_REMOTE_NAME'] : '⚠️ N/A') ?></td>
         </tr>
         <tr>
             <th>Roles</th>
